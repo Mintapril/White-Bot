@@ -15,8 +15,8 @@ export const rule = {
 
 const url = "https://v1.hitokoto.cn";
 export async function onesaid(e: MessageEvent) {
-
-  const conf: Map<string, any> = await configFile.setConf(e.self_id!.toString(), {PluginSettings: null});
+  
+  //const conf: Map<string, any> = await configFile.setConf(e.self_id!.toString(), {PluginSettings: null});
   const response = await fetch(url);
   const res: any = await response.json();
   const hitokoto = res.hitokoto;
