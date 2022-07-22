@@ -3,7 +3,7 @@
  ### 部署
  ```bash
  git clone https://github.com/Mintapril/White-Bot.git
- cd White-bot
+ cd White-Bot
  npm i
  tsc
  ```
@@ -21,7 +21,7 @@
  ```
  ### 插件
  - 将插件放入 `./plugins` 文件夹即可
- - White-bot基本支持Yunzai-Bot的单独js文件形式的插件，未来会添加更多特性
+ - White-Bot基本支持Yunzai-Bot的单独js文件形式的插件，未来会添加更多特性
  ```typescript
  /**     插件示例     */
  export const rule = {
