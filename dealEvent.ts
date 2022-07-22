@@ -25,10 +25,10 @@ async function dealMsg(e: MessageEvent) {
   PluginsMap.forEach(plugin => {
     plugin.plugins.forEach(async(value, key) => {
       if (!(value.get("reg") === "noCheck") && !(value.get("reg") as RegExp).test(e.raw_message)) return;
-      const pluginFunction: Function = value.get("function") as Function;
-      //console.log(plugin);
-      console.log(e);
-      pluginFunction(e);
+      const pluginFunction: Function = value.get("method") as Function;
+      console.log(plugin);
+      //console.log(e);
+      pluginFunction(e).catch((err: any) => console.log(err));
     });
   });
 }

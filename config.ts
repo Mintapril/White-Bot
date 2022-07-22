@@ -1,6 +1,11 @@
 import { ConfigFile } from "./index.js";
 
-let configFile: ConfigFile;
-const createConfigFile = () => configFile = new ConfigFile();
+let BotConf: ConfigFile;
+/**
+ *
+ * 创建config实例
+ * @param {string} [path] yaml配置文件位置
+ */
+const createConfig = (path?: string) => BotConf = new ConfigFile(path);
 
-export { createConfigFile, configFile };
+export { createConfig, BotConf };

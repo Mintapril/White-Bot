@@ -6,10 +6,15 @@ import path from "path";
 import common from "./common.js";
 import eventHandler from "./dealEvent.js"
 import { Init } from "./init.js";
-import { configFile } from "./config.js";
+import { BotConf, createConfig} from "./config.js";
 
 const _path = process.cwd();
 
+/**
+ *
+ *
+ * @interface ConfigContantable Config文件基类
+ */
 interface ConfigContantable {
   platform: undefined | Platform;
   log_level: undefined | LogLevel;
@@ -23,16 +28,33 @@ interface ConfigContantable {
   PluginSettings: any;
 }
 
+/**
+ *
+ *
+ * @interface botConfig 包含账号和密码，用于和自行构建区分
+ * @extends {ConfigContantable}
+ */
 interface botConfig extends ConfigContantable {
   account: number;
   pwd: string;
 }
 
+/**
+ *
+ *
+ * @interface simpleConfig 自行构建设置
+ * @extends {ConfigContantable}
+ */
 interface simpleConfig extends ConfigContantable {
 
 }
 
 export class ConfigFile {
+  /**
+   * Creates an instance of ConfigFile.
+   * @param {string} [filepath] 设置文件位置，仅支持yaml
+   * @memberof ConfigFile 
+   */
   constructor(filepath?: string) {
     this.confPath = filepath ?? path.join(_path, "config.yaml");
     const settings: ConfigFile = yaml.load(readFileSync(this.confPath, "utf-8")) as ConfigFile;
@@ -43,6 +65,14 @@ export class ConfigFile {
   confPath: string;
   Clients: Map<string, botConfig> = new Map<string, botConfig>();
   DefaultSettings: botConfig;
+  /**
+   *
+   *
+   * @param {string} account qq号码，用于确认所设置机器人实例
+   * @param {simpleConfig} settings 设置项，请参考interface ConfigContantable构建，不建议在这里设置account和pwd
+   * @type {Function}
+   * @memberof ConfigFile
+   */
   setConf: Function = async(account: string, settings: simpleConfig) => {
     this.Clients.set(account, Object.assign({}, this.Clients.get(account), settings));
     const conf = Object.assign({}, this.configObj, { Clients: Object.fromEntries(this.Clients.entries()) });
@@ -63,7 +93,7 @@ export class ConfigFile {
 class Bot {
   /**
    * Creates an instance of Bot.
-   * @param {userSettings} Config
+   * @param {userSettings} Config 机器人启动的必须项
    * @memberof Bot
    */
   constructor(Config: botConfig) {
@@ -82,11 +112,10 @@ class Bot {
   Client: Client;
 }
 
-Init();
-
+createConfig();
 const createBot = (Config: botConfig) => new Bot(Config);
-let BotsMap: Map<string | number, Bot> = new Map();
-configFile.Clients.forEach(botSettings => BotsMap.set(botSettings.account, createBot(botSettings)));
+export let BotsMap: Map<string | number, Bot> = new Map();
+BotConf.Clients.forEach(botSettings => BotsMap.set(botSettings.account, createBot(botSettings)));
 
 BotsMap.forEach(bot => {
   bot.Client.on("system.login.qrcode", function (e) {
@@ -110,7 +139,11 @@ BotsMap.forEach(bot => {
       this.login();
     });
   });
-  bot.Client.on("system.online", () => {});
+  bot.Client.on("system.online", function() {
+    Init().catch(err => {
+    this.logger.error(err);
+    process.exit();
+  })});
 
   //后面是消息处理
 
