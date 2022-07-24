@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import { existsSync , PathLike, watch} from "fs";
 import path from "path";
 import common from "./common.js";
+import yaml from "js-yaml";
 import { PluginsMap } from "./plugins/headfile.js";
 import { createConfig } from "./config.js";  
 
@@ -45,20 +46,46 @@ class PluginRuleMap extends Map<string, string | RegExp | Function>{
     return this;
   }
 }
+interface PluginContantable {
+  name: string;
+  path: string;
+  plugins: any;
+  subModules: Array<string>;
+}
+
+type pluginsObject = {
+  [key: string]: {
+    [key: string]: any;
+  };
+}
+
+class SerializablePlugin implements PluginContantable {
+  name: string;
+  path: string;
+  plugins: pluginsObject = {};
+  subModules: Array<string>;
+  constructor(plugin: Plugin) {
+    this.name = plugin.name;
+    this.path = plugin.path;
+    this.subModules = plugin.subModules;
+    plugin.plugins.forEach((v, k) => this.plugins[k] = Object.fromEntries(v.entries()));
+  }
+}
 
 /**
  *
  * 使用new Plugin(filename)创建一个plugin实例
- * Plugin文件目前基本支持YunzaiPlugin的单独js的形式，未来会增加更多新特性
+ * Plugin文件目前基本支持YunzaiPlugin的单独js的形式，未来会增加更多特性
  * 每个plugin实例都会在检测到原文件变更时刷新自己
  * @export
  * @class Plugin 每个文件一个实例
  */
-export class Plugin {
+export class Plugin implements PluginContantable {
   name: string;
   path: string;
   plugins: Map<string, Map<string, RegExp | Function | string> | PluginRuleMap> = new Map();
-  subModiles: Array<string> = [];
+  subModules: Array<string> = [];
+  loaded: boolean = false;
   /**
    * Creates an instance of Plugin.
    * @param {string} file plugin文件名
@@ -72,8 +99,9 @@ export class Plugin {
         const rule: PluginRule = Object.assign(module.rule[name], {name: name});
         //const value = module.rule[name];
         this.plugins.set(name, new PluginRuleMap(rule, module));
-        this.subModiles = [];
-        this.subModiles.push(name);
+        this.subModules = [];
+        this.subModules.push(name);
+        this.loaded = true;
       };
     }).catch(err => console.log(err));
     PluginsMap.set(this.name, this);
@@ -125,13 +153,15 @@ export async function Init() {
 
   createConfig();  
 
-  fs.readdir(path.join(__dirname, "plugins")).then(dist => {
-    dist.forEach(async file => {
+  fs.readdir(path.join(__dirname, "plugins")).then(async dist => {
+    const serlizablePlugins = dist.map(file => {
       if (!/\.js$/.test(file) || /^headfile\.js$/.test(file)) return;
       //const module = await import(path.join(__dirname, "plugins", file));
       const plugin = new Plugin(file);
       console.log(`plugin ${plugin.name} initialized`);
+      return plugin;
     });
+    serializePlugins(serlizablePlugins.filter(plugin => plugin) as Array<Plugin>);
   });
   /*
   watch(path.join(__dirname, "plugins"), async (event, filename) => {
@@ -143,4 +173,23 @@ export async function Init() {
   });
   */
   return;
+}
+
+async function serializePlugins(plugins: Array<Plugin>) {
+  await checkLoad(plugins);
+  let fileObj: SerializablePlugin[] = [];
+  plugins.forEach(plugin => fileObj.push(new SerializablePlugin(plugin)));
+  console.log(fileObj);
+  fs.writeFile(path.join(__dirname, "SerializedPlugins.json"), JSON.stringify(fileObj, (key, value) => {
+    if(value as any instanceof RegExp) return value.toString();
+    if(typeof value === "function") return value.constructor.toString();
+    return value;
+  }, "\t"));
+}
+async function checkLoad(plugins: Array<Plugin>): Promise<boolean> {
+  await common.sleep(150);
+  //console.log(plugins);
+  const loaded = plugins.every(v => (v as Plugin).loaded);
+  if(!loaded) return checkLoad(plugins);
+  else return true;
 }

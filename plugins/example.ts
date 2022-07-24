@@ -5,8 +5,7 @@ import { MessageEvent } from "../dealEvent.js";
 import { BotConf } from "../config.js";  //引入该项以支持修改设置
 import common from "../common.js";
 
-export /** @type {*} 规则 */
-const rule = {
+export const rule = {
   onesaid: /** 规则名字,当method项为可调用时可任意 **/ {
     reg: "^#?一言",    //匹配正则
     priority: 500,     //暂无效
@@ -25,6 +24,7 @@ const url = "https://v1.hitokoto.cn";    //接口链接
  * @return {boolean} 
  */
 export async function onesaid(e: MessageEvent): Promise<boolean> {
+  
   //const conf: Map<string, any> = await BotConf.setConf(e.self_id!.toString(), {PluginSettings: null}); //无用
   const response = await fetch(url);     //调用接口获取数据
   const res: any = await response.json();//数据转json格式方便解析

@@ -34,7 +34,7 @@ interface ConfigContantable {
  * @interface botConfig 包含账号和密码，用于和自行构建区分
  * @extends {ConfigContantable}
  */
-interface botConfig extends ConfigContantable {
+export interface botConfig extends ConfigContantable {
   account: number;
   pwd: string;
 }
@@ -57,8 +57,8 @@ export class ConfigFile {
    */
   constructor(filepath?: string) {
     this.confPath = filepath ?? path.join(_path, "config.yaml");
-    const settings: ConfigFile = yaml.load(readFileSync(this.confPath, "utf-8")) as ConfigFile;
-    this.Clients = new Map(Object.entries(settings.Clients));
+    const settings: any = yaml.load(readFileSync(this.confPath, "utf-8"));
+    this.Clients = new Map(Object.entries(common.clientArrToObj(settings.Clients as botConfig[])));
     this.DefaultSettings = settings.DefaultSettings;
     this.configObj = settings;
   }
@@ -75,7 +75,8 @@ export class ConfigFile {
    */
   setConf: Function = async(account: string, settings: simpleConfig) => {
     this.Clients.set(account, Object.assign({}, this.Clients.get(account), settings));
-    const conf = Object.assign({}, this.configObj, { Clients: Object.fromEntries(this.Clients.entries()) });
+    const conf = Object.assign({}, this.configObj, { Clients: Object.values(Object.fromEntries(this.Clients.entries()))});
+    this.configObj = conf;
     fs.writeFile("./config.yaml", yaml.dump(conf)).catch(() => console.log("配置文件保存失败，重启后将恢复原始设置"));
     /*
     const _settings: ConfigFile = yaml.load(readFileSync(this.confPath, "utf-8")) as ConfigFile;

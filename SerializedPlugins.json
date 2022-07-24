@@ -1,0 +1,17 @@
+[
+	{
+		"name": "example",
+		"path": "D:\\node\\White-Bot\\plugins\\example.js",
+		"plugins": {
+			"onesaid": {
+				"name": "onesaid",
+				"reg": "/^#?一言/",
+				"description": "一言",
+				"method": "function AsyncFunction() { [native code] }"
+			}
+		},
+		"subModules": [
+			"onesaid"
+		]
+	}
+]

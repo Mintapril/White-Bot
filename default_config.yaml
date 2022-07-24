@@ -1,6 +1,20 @@
 Clients:
-  "123456":         #账号
-    account: 123456 #账号 （没错，填写两遍
+  - account: 123456 #账号
+    pwd: 123456     #密码
+    autoFriend: 1   #自动添加好友
+    platform: 4     #平台，详情见oicq库
+    log_level: info #log等级，见oicq
+    resend: true    #风控时尝试分片发送，见oicq
+    #该注释之后的配置项暂未实现
+    Master:
+      - 123456      #主人qq
+    Waiter: 5000    #冷却cd
+    Blacks:         #黑名单
+      users: ~
+      group: ~
+    PluginSettings: #插件设置
+      onesaid:
+  - account: 123456 #第二个账号（有的话
     pwd: 123456     #密码
     autoFriend: 1   #自动添加好友
     platform: 4     #平台，详情见oicq库
