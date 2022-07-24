@@ -184,7 +184,7 @@ async function serializePlugins(plugins: Array<Plugin>) {
     if(value as any instanceof RegExp) return value.toString();
     if(typeof value === "function") return value.constructor.toString();
     return value;
-  }, "\t"));
+  }, 2));
 }
 async function checkLoad(plugins: Array<Plugin>): Promise<boolean> {
   await common.sleep(150);

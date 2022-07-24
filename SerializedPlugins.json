@@ -1,17 +1,32 @@
 [
-	{
-		"name": "example",
-		"path": "D:\\node\\White-Bot\\plugins\\example.js",
-		"plugins": {
-			"onesaid": {
-				"name": "onesaid",
-				"reg": "/^#?一言/",
-				"description": "一言",
-				"method": "function AsyncFunction() { [native code] }"
-			}
-		},
-		"subModules": [
-			"onesaid"
-		]
-	}
+  {
+    "name": "example",
+    "path": "D:\\node\\White-Bot\\plugins\\example.js",
+    "plugins": {
+      "onesaid": {
+        "name": "onesaid",
+        "reg": "/^#?一言/",
+        "description": "一言",
+        "method": "function AsyncFunction() { [native code] }"
+      }
+    },
+    "subModules": [
+      "onesaid"
+    ]
+  },
+  {
+    "name": "help",
+    "path": "D:\\node\\White-Bot\\plugins\\help.js",
+    "plugins": {
+      "help": {
+        "name": "help",
+        "reg": "/^#?(帮助|help|菜单)/",
+        "description": "打印SerializedPlugins.json",
+        "method": "function AsyncFunction() { [native code] }"
+      }
+    },
+    "subModules": [
+      "help"
+    ]
+  }
 ]
