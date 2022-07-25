@@ -1,8 +1,6 @@
 import { segment } from "oicq";          //使用segment构建复杂消息类型
 import fetch from "node-fetch";
-import yaml from "js-yaml";
 import { MessageEvent } from "../dealEvent.js";
-import { BotConf } from "../config.js";  //引入该项以支持修改设置
 import common from "../common.js";
 
 export const rule = {
@@ -25,7 +23,8 @@ const url = "https://v1.hitokoto.cn";    //接口链接
  */
 export async function onesaid(e: MessageEvent): Promise<boolean> {
   
-  //const conf: Map<string, any> = await BotConf.setConf(e.self_id!.toString(), {PluginSettings: null}); //无用
+  //const conf: Map<string, any> = await e.setConf({PluginConfig: null}); //无用
+  //e.logger.info(conf);
   const response = await fetch(url);     //调用接口获取数据
   const res: any = await response.json();//数据转json格式方便解析
   /*

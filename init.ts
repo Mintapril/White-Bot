@@ -158,10 +158,10 @@ export async function Init() {
       if (!/\.js$/.test(file) || /^headfile\.js$/.test(file)) return;
       //const module = await import(path.join(__dirname, "plugins", file));
       const plugin = new Plugin(file);
-      console.log(`plugin ${plugin.name} initialized`);
       return plugin;
     });
     serializePlugins(serlizablePlugins.filter(plugin => plugin) as Array<Plugin>);
+    console.log("插件总览文件plugins-overview.json已生成");
   });
   /*
   watch(path.join(__dirname, "plugins"), async (event, filename) => {
@@ -179,10 +179,11 @@ async function serializePlugins(plugins: Array<Plugin>) {
   await checkLoad(plugins);
   let fileObj: SerializablePlugin[] = [];
   plugins.forEach(plugin => fileObj.push(new SerializablePlugin(plugin)));
-  console.log(fileObj);
-  fs.writeFile(path.join(__dirname, "SerializedPlugins.json"), JSON.stringify(fileObj, (key, value) => {
+  //console.log(fileObj);
+  fs.writeFile(path.join(__dirname, "plugins-overview.json"), JSON.stringify(fileObj, (key, value) => {
     if(value as any instanceof RegExp) return value.toString();
-    if(typeof value === "function") return value.constructor.toString();
+    if(typeof value === "function") return Object.prototype.toString.call(value);
+    if(key === "subModules") return;
     return value;
   }, 2));
 }

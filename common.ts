@@ -18,4 +18,8 @@ const clientArrToObj = function (clients: botConfig[]) {
   return obj!;
 }
 
+function clientArrToMap(clients: botConfig[]) {
+  return new Map(clients.map(client => [client.account, client]));
+}
+
 export default { sleep, Map2Object, ObjToMap, clientArrToObj};

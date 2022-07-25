@@ -25,7 +25,7 @@ interface ConfigContantable {
     user: any;
     group: any;
   }
-  PluginSettings: any;
+  PluginConfig: any;
 }
 
 /**
@@ -45,7 +45,7 @@ export interface botConfig extends ConfigContantable {
  * @interface simpleConfig 自行构建设置
  * @extends {ConfigContantable}
  */
-interface simpleConfig extends ConfigContantable {
+export interface simpleConfig extends ConfigContantable {
 
 }
 
@@ -58,24 +58,26 @@ export class ConfigFile {
   constructor(filepath?: string) {
     this.confPath = filepath ?? path.join(_path, "config.yaml");
     const settings: any = yaml.load(readFileSync(this.confPath, "utf-8"));
-    this.Clients = new Map(Object.entries(common.clientArrToObj(settings.Clients as botConfig[])));
-    this.DefaultSettings = settings.DefaultSettings;
+    this.Clients = new Map(settings.Clients.map((client: botConfig) => [client.account, client]));
+    console.log(this.Clients.get(570724229));
+    this.DefaultConfig = settings.DefaultSettings;
     this.configObj = settings;
   }
   confPath: string;
-  Clients: Map<string, botConfig> = new Map<string, botConfig>();
-  DefaultSettings: botConfig;
+  Clients: Map<number, botConfig> = new Map<number, botConfig>();
+  DefaultConfig: botConfig;
   /**
    *
    *
-   * @param {string} account qq号码，用于确认所设置机器人实例
+   * @param {number} account qq号码，用于确认所设置机器人实例
    * @param {simpleConfig} settings 设置项，请参考interface ConfigContantable构建，不建议在这里设置account和pwd
    * @type {Function}
    * @memberof ConfigFile
    */
-  setConf: Function = async(account: string, settings: simpleConfig) => {
-    this.Clients.set(account, Object.assign({}, this.Clients.get(account), settings));
-    const conf = Object.assign({}, this.configObj, { Clients: Object.values(Object.fromEntries(this.Clients.entries()))});
+  setConf: Function = async(account: number, settings: simpleConfig) => {
+    //this.Clients.set(account, Object.assign({}, this.Clients.get(account), settings));
+    console.log(Object.assign({}, this.Clients.get(account), settings));
+    const conf = Object.assign({}, this.configObj, { Clients: Array.from(this.Clients.values())});
     this.configObj = conf;
     fs.writeFile("./config.yaml", yaml.dump(conf)).catch(() => console.log("配置文件保存失败，重启后将恢复原始设置"));
     /*
@@ -91,7 +93,7 @@ export class ConfigFile {
 }
 
 
-class Bot {
+export class Bot {
   /**
    * Creates an instance of Bot.
    * @param {userSettings} Config 机器人启动的必须项
@@ -150,13 +152,13 @@ BotsMap.forEach(bot => {
 
   //监听群消息事件
   bot.Client.on("message.group", (event) => {
-    eventHandler.dealGroupMsg(event).catch((error) => {
+    eventHandler.dealGroupMsg(event as any).catch((error) => {
       bot.Client.logger.error(error);
     });
   });
   //监听私聊消息事件
   bot.Client.on("message.private", (event) => {
-    eventHandler.dealPrivateMsg(event).catch((error) => {
+    eventHandler.dealPrivateMsg(event as any).catch((error) => {
       bot.Client.logger.error(error);
     });
   });
