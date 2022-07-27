@@ -43,7 +43,7 @@ class PluginRuleMap extends Map<string, string | RegExp | Function>{
       ["description", rules.description ?? rules.describe ?? ""],
       ["method", rules.method ?? father[rules.name]],
     ]);
-    return this;
+    //return this;
   }
 }
 interface PluginContantable {

@@ -59,7 +59,6 @@ export class ConfigFile {
     this.confPath = filepath ?? path.join(_path, "config.yaml");
     const settings: any = yaml.load(readFileSync(this.confPath, "utf-8"));
     this.Clients = new Map(settings.Clients.map((client: botConfig) => [client.account, client]));
-    console.log(this.Clients.get(570724229));
     this.DefaultConfig = settings.DefaultSettings;
     this.configObj = settings;
   }
@@ -176,4 +175,4 @@ BotsMap.forEach(bot => {
   bot.Client.on("request.group", (event) => {
     eventHandler.dealGroupRequest(event);
   });
-})
+});

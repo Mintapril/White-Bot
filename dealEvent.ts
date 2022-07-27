@@ -32,12 +32,12 @@ async function dealMsg(e: MessageEvent) {
   //添加自定义的属性
   const MasterArr = BotConf.Clients.get(e.self_id)?.Master as number[];
   if(MasterArr.includes(e.sender!.user_id)) e.isMaster = true;
-  else e.isMaster = false;                                                                //消息实例来源是否是主人
+  else e.isMaster = false;                                                                  //消息实例来源是否是主人
   e.selfBot = BotsMap.get(e.self_id)!;
-  e.setConf = async(conf: simpleConfig) => BotConf.setConf(e.self_id, conf);  //获取自己的设置实例，便于修改
-  e.logger = e.selfBot.Client.logger;                                                     //方便打印
+  e.setConf = async(conf: simpleConfig) => BotConf.setConf(e.self_id, conf);                //获取自己的设置实例，便于修改
+  e.logger = e.selfBot.Client.logger;                                                       //方便打印
   e.replyCatch = e.reply;
-  e.reply = async(msg: any) => e.replyCatch(msg).catch((err: any) => e.logger.error(err));//原始e.reply方法没有catch块
+  e.reply = async(msg: any) => e.replyCatch(msg).catch((err: any) => e.logger.error(err));  //原始e.reply方法没有catch块
 
   PluginsMap.forEach(plugin => {
     plugin.plugins.forEach(async(value, key) => {

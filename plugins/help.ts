@@ -19,4 +19,4 @@ export const rule = {
 
 const _path = process.cwd();
 
-export async function help(e: MessageEvent) { e.reply(readFileSync(path.join(_path, "SerializedPlugins.json"), "utf-8")).catch((err: any) => BotsMap.get(e.self_id!)?.Client.logger.error(err)) }
+export async function help(e: MessageEvent) { e.reply(readFileSync(path.join(_path, "plugins-overview.json"), "utf-8")) }
