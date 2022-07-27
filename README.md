@@ -1,11 +1,18 @@
 # White-Bot
- 基于oicq协议库的简单的qq机器人
+ 基于oicq协议库的简单的qq机器人  
+ 业余爱好，技术力低下
+ #### 下一步...
+ - 添加每个bot实例的插件开关功能
+ - 移除config.yaml中的插件设置，每个插件会有一个单独的配置文件
+ - 插件可以是文件夹形式
+ - 我的部分Yunzai-Bot插件会移植过来
+ - 还在想
  ### 部署
  ```bash
  git clone https://github.com/Mintapril/White-Bot.git
  cd White-Bot
- npm i
  tsc
+ npm i
  ```
  ### 使用
  ```bash
