@@ -1,5 +1,11 @@
 config.yaml
+plugin_overview.txt
 data/
+searched/
+chat_record/
+configs/
+core
+pm2.json
 *.js
 # Logs
 logs
