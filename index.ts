@@ -1,4 +1,4 @@
-import { Client, createClient, LogLevel, Platform } from "oicq";
+import { Client, createClient, LogLevel, Platform } from "icqq";
 import yaml from "js-yaml";
 import fs from "fs/promises";
 import { readFileSync } from "fs";
@@ -6,7 +6,7 @@ import path from "path";
 import common from "./common.js";
 import eventHandler from "./dealEvent.js"
 import { Init } from "./init.js";
-import { BotConf, createConfig} from "./config.js";
+import { BotConf, createConfig } from "./config.js";
 
 const _path = process.cwd();
 
@@ -79,7 +79,7 @@ export class ConfigFile {
    */
   async setConf(account: number, settings: simpleConfig) {
     console.log(Object.assign({}, this.Clients.get(account), settings));
-    const conf = Object.assign({}, this.configObj, { Clients: Array.from(this.Clients.values())});
+    const conf = Object.assign({}, this.configObj, { Clients: Array.from(this.Clients.values()) });
     this.configObj = conf;
     fs.writeFile("./config.yaml", yaml.dump(conf)).catch(() => console.log("配置文件保存失败，重启后将恢复原始设置"));
     return this.Clients.get(account);
@@ -115,9 +115,9 @@ export class Bot {
     this.Config = Config;
     this.self = Config.account;
     // 创建一个基于配置信息的客户端实例
-    this.Client = createClient(this.Config.account, {
+    this.Client = createClient({
       log_level: this.Config.log_level ?? "info",
-      platform: this.Config.platform ?? 4,
+      platform: this.Config.platform ?? 3,
       resend: this.Config.resend,
       data_dir: path.join(_path, "data", this.Config.account.toString() + "_data"),
     });
@@ -136,9 +136,9 @@ BotsMap.forEach(bot => {
     this.logger.mark("扫码后按Enter回车完成登录");
     await common.sleep(12000);
     this.login();
-//    process.stdin.once("data", () => {
-//      this.login();
-//    });
+    //    process.stdin.once("data", () => {
+    //      this.login();
+    //    });
   });
   bot.Client.on("system.login.slider", function () {
     this.logger.mark(bot.self, "请输入获取的ticket，按回车完成滑动验证");
@@ -151,15 +151,29 @@ BotsMap.forEach(bot => {
     process.exit();
   });
   bot.Client.on("system.login.device", function (e) {
-    process.stdin.once("data", () => {
-      this.login();
+    this.logger.mark('请选择验证方式:(1：短信验证   其他：扫码验证)');
+    process.stdin.once("data", (data) => {
+      if (data.toString().trim() === '1') {
+        this.sendSmsCode();
+        this.logger.mark('请输入手机收到的短信验证码:');
+        process.stdin.once('data', (res) => {
+          this.submitSmsCode(res.toString().trim());
+        })
+      } else {
+        this.logger.mark('扫码完成后回车继续：' + e.url);
+        process.stdin.once('data', () => {
+          this.login();
+        })
+      }
     });
   });
-  bot.Client.on("system.online", function() {
+  bot.Client.login(bot.Config.account, bot.Config.pwd);
+  bot.Client.on("system.online", function () {
     Init().catch(err => {
-    this.logger.error(err);
-    process.exit();
-  })});
+      this.logger.error(err);
+      process.exit();
+    })
+  });
 
   //后面是消息处理
 

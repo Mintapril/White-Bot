@@ -12,10 +12,10 @@
   "dependencies": {
     "@waylaidwanderer/chatgpt-api": "^1.22.5",
     "chatgpt": "^5.0.4",
+    "icqq": "^0.2.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
-    "node-fetch": "^3.2.8",
-    "oicq": "^2.3.1"
+    "node-fetch": "^3.2.8"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
