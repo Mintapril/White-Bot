@@ -2,8 +2,8 @@ import {
   Message, FriendRequestEvent, GroupAdminEvent, GroupInviteEvent,
   GroupMessageEvent, GroupMuteEvent, GroupPokeEvent, GroupRecallEvent,
   GroupRequestEvent, GroupTransferEvent, MemberDecreaseEvent, MemberIncreaseEvent,
-  PrivateMessageEvent, segment, Client, Logger
-} from "oicq";
+  PrivateMessageEvent, segment, Client
+} from "icqq";
 import common from "./common.js";
 import { BotConf } from "./config.js";
 import { Bot, botConfig, BotsMap, simpleConfig } from "./index.js";
@@ -26,7 +26,7 @@ export interface MessageEvent extends Message {
   setConf: Function;
   self_id: number;
   isMaster: boolean;
-  logger: Logger;
+  logger: any;
   message_type: string;
 }
 
@@ -58,8 +58,8 @@ async function dealMsg(e: MessageEvent) {
     e.logger = e.selfBot.Client.logger;                                                       //方便打印
     e.msg = e.raw_message;
 
-    const pluginFunction: Function = value.get("method") as Function;
-    isDone = await pluginFunction(e).catch((err: any) => e.logger.error(err));
+    const method: Function = value.get("method") as Function;
+    isDone = await method(e).catch((err: any) => e.logger.error(err));
     if (isDone) break;
   }
 }
