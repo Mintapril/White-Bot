@@ -121,8 +121,6 @@ export class Bot {
       resend: this.Config.resend,
       data_dir: path.join(_path, "data", this.Config.account.toString() + "_data"),
     });
-    // 通过提供的密码进行登录
-    this.Client.login(this.Config.pwd);
   }
 }
 
@@ -132,15 +130,8 @@ export let BotsMap: Map<string | number, Bot> = new Map();
 BotConf.Clients.forEach(botSettings => BotsMap.set(botSettings.account, createBot(botSettings)));
 
 BotsMap.forEach(bot => {
-  bot.Client.on("system.login.qrcode", async function (e) {
-    this.logger.mark("扫码后按Enter回车完成登录");
-    await common.sleep(12000);
-    this.login();
-    //    process.stdin.once("data", () => {
-    //      this.login();
-    //    });
-  });
   bot.Client.on("system.login.slider", function () {
+    const self = this;
     this.logger.mark(bot.self, "请输入获取的ticket，按回车完成滑动验证");
     process.stdin.once("data", (input) => {
       this.submitSlider(input.toString());
@@ -167,13 +158,14 @@ BotsMap.forEach(bot => {
       }
     });
   });
-  bot.Client.login(bot.Config.account, bot.Config.pwd);
   bot.Client.on("system.online", function () {
     Init().catch(err => {
       this.logger.error(err);
       process.exit();
     })
-  });
+  }
+  bot.Client.login(bot.Config.account, bot.Config.pwd);
+);
 
   //后面是消息处理
 
