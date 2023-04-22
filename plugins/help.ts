@@ -1,4 +1,4 @@
-import { segment } from "oicq";
+import { segment } from "icqq";
 import fetch from "node-fetch";
 import yaml from "js-yaml";
 import { MessageEvent } from "../dealEvent.js";
@@ -19,7 +19,7 @@ export const rule = {
 
 const _path = process.cwd();
 
-export async function help(e: MessageEvent) { 
+export async function help(e: MessageEvent) {
   e.reply(readFileSync(path.join(_path, "plugin_overview.txt"), "utf-8"));
   return true;
 }

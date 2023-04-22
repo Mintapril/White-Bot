@@ -1,4 +1,4 @@
-import { segment } from "oicq";          //使用segment构建复杂消息类型
+import { segment } from "icqq";          //使用segment构建复杂消息类型
 import fetch from "node-fetch";
 import { MessageEvent } from "../dealEvent.js";
 import common from "../common.js";
@@ -40,7 +40,7 @@ export async function onesaid(e: MessageEvent): Promise<boolean> {
     res.from ?
       msg.push(`「 ${res.from}」`) : null;
   /**
-  const message = [                      //使用segment构建复杂消息元素，详情见oicq库
+  const message = [                      //使用segment构建复杂消息元素，详情见icqq库
     "hello world",
     segment.image("/tmp/abc.jpg"),
     segment.face(104),

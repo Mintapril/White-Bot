@@ -33,7 +33,7 @@ const api = new ChatGPTAPI({
     return fetch(input, mergedOptions);
   },
   debug: false,
-  apiKey: 'your_api_key',
+  apiKey: process.env.OPENAI_API_KEY as string,
   systemMessage: `
     这是一个角色扮演的情景，你需要遵守以下规则：
     - 你所扮演的人名字是伊蕾娜。是一位魔女。
