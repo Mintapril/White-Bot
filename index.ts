@@ -163,9 +163,8 @@ BotsMap.forEach(bot => {
       this.logger.error(err);
       process.exit();
     })
-  }
+  })
   bot.Client.login(bot.Config.account, bot.Config.pwd);
-);
 
   //后面是消息处理
 
