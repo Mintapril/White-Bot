@@ -1,8 +1,8 @@
 import { ChatGPTAPI, ChatMessage } from 'chatgpt';
 import fs from 'fs';
 import path from 'path';
-import HttpsProxyAgent from 'https-proxy-agent';
-import fetch from 'node-fetch';
+//import HttpsProxyAgent from 'https-proxy-agent';
+//import fetch from 'node-fetch';
 import { MessageEvent } from '../dealEvent.js';
 
 interface UserUsage {
@@ -22,7 +22,7 @@ interface UsersCooldown {
 const model = 'gpt-4';
 const model3 = 'gpt-3.5-turbo';
 const api = new ChatGPTAPI({
-  fetch: (input: any, options: any = {}) => {
+  /**fetch: (input: any, options: any = {}) => {
     const defaultOptions = {
       agent: new HttpsProxyAgent('http://localhost:7890')
     };
@@ -31,7 +31,7 @@ const api = new ChatGPTAPI({
       ...options
     }
     return fetch(input, mergedOptions);
-  },
+  },**/
   debug: false,
   apiKey: process.env.OPENAI_API_KEY as string,
   systemMessage: `
@@ -55,7 +55,6 @@ const api = new ChatGPTAPI({
     model: model3,
     temperature: 1.85,
     top_p: 0.85,
-    stream: false
   }
 });
 
